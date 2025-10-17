@@ -1,24 +1,73 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, Center, PresentationControls, MeshReflectorMaterial } from '@react-three/drei';
 import { IceCreamTruck } from '../IceCreamTruck';
 import AboutPopup from '../AboutPopup';
 import ProjectsPopup from '../ProjectsPopup';
+import useClickSound from '../../hooks/useClickSound';
+import useWhooshSound from '../../hooks/useWhooshSound';
 
 export default function IceCreamTruckCanvas() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isProjectsOpen, setIsProjectsOpen] = useState(false);
+  const playClickSound = useClickSound();
+  const { playWhooshSound, stopWhooshSound } = useWhooshSound();
+  const hasMoved = useRef(false);
+
+  const handleAboutClick = () => {
+    playClickSound();
+    setIsAboutOpen(true);
+  };
+
+  const handleProjectsClick = () => {
+    playClickSound();
+    setIsProjectsOpen(true);
+  };
+
+  const handleResumeClick = () => {
+    playClickSound();
+    window.open('/portfolio/Resume_TiyaVerma.pdf', '_blank');
+  };
+
+  const handleContactClick = () => {
+    playClickSound();
+    window.open('mailto:tiyaverma2004@yahoo.in', '_blank');
+  };
+
+  const handleTruckMovement = () => {
+    if (!hasMoved.current) {
+      hasMoved.current = true;
+      playWhooshSound();
+      // Stop the sound after 1 second
+      setTimeout(() => {
+        stopWhooshSound();
+      }, 1000);
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopWhooshSound();
+    };
+  }, [stopWhooshSound]);
 
   return (
     <div className="relative w-full h-full">
       <button
-        onClick={() => setIsAboutOpen(true)}
+        onClick={handleAboutClick}
         className="absolute top-4 right-4 z-10 bg-[#1a1a4f] text-white px-4 py-2 rounded-lg hover:bg-[#2a2a6f] transition-colors"
       >
         About
       </button>
-      <AboutPopup isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
-      <ProjectsPopup isOpen={isProjectsOpen} onClose={() => setIsProjectsOpen(false)} />
+      <AboutPopup isOpen={isAboutOpen} onClose={() => {
+        playClickSound();
+        setIsAboutOpen(false);
+      }} />
+      <ProjectsPopup isOpen={isProjectsOpen} onClose={() => {
+        playClickSound();
+        setIsProjectsOpen(false);
+      }} />
       <Canvas
         camera={{
           fov: 45,
@@ -49,7 +98,14 @@ export default function IceCreamTruckCanvas() {
             castShadow
           />
           
-          <OrbitControls enableZoom={true} maxDistance={8.6} minPolarAngle={Math.PI / 4} maxPolarAngle={Math.PI / 2} target={[0,0,0]} />
+          <OrbitControls 
+            enableZoom={true} 
+            maxDistance={8.6} 
+            minPolarAngle={Math.PI / 4} 
+            maxPolarAngle={Math.PI / 2} 
+            target={[0,0,0]}
+            onChange={handleTruckMovement}
+          />
           <PresentationControls
             global
             rotation={[0, 0, 0]}
@@ -57,15 +113,16 @@ export default function IceCreamTruckCanvas() {
             azimuth={[-Math.PI, Math.PI]}
             config={{ mass: 0.5, tension: 100 }}
             zoom={true}
+            onChange={handleTruckMovement}
           >
             <group>
               <Center>
                 <IceCreamTruck 
                   scale={0.7}
-                  onAboutClick={() => setIsAboutOpen(true)}
-                  onResumeClick={() => window.open('/Resume_TiyaVerma.pdf', '_blank')}
-                  onProjectsClick={() => setIsProjectsOpen(true)}
-                  onContactClick={() => alert('Contact clicked!')}
+                  onAboutClick={handleAboutClick}
+                  onResumeClick={handleResumeClick}
+                  onProjectsClick={handleProjectsClick}
+                  onContactClick={handleContactClick}
                 />
               </Center>
               <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.9, -11.75]} receiveShadow>
@@ -88,28 +145,24 @@ export default function IceCreamTruckCanvas() {
               </mesh>
               {/* Clickable areas for signpost labels */}
               {/* About */}
-              <mesh position={[-1.55, 0.89, 1]} scale={[1, 0.25, 0.2]} onClick={() => setIsAboutOpen(true)} rotation={[0, 19.75, 0]}>
+              <mesh position={[-1.55, 0.89, 1]} scale={[1, 0.25, 0.2]} onClick={handleAboutClick} rotation={[0, 19.75, 0]}>
                 <boxGeometry args={[1, 1, 0.5]} />
-                <meshBasicMaterial transparent opacity={0}
-                 color="#1a1a4f"
-                 />
+                <meshBasicMaterial transparent opacity={0} color="#1a1a4f" />
               </mesh>
               {/* Resume */}
-              <mesh position={[-1.67, 0.58, 1]} scale={[0.75, 0.2, 0.2]} onClick={() => window.open('/Resume_TiyaVerma.pdf', '_blank')} rotation={[0, 19.1, 0]}>
+              <mesh position={[-1.67, 0.58, 1]} scale={[0.75, 0.2, 0.2]} onClick={handleResumeClick} rotation={[0, 19.1, 0]}>
                 <boxGeometry args={[1, 1, 0.5]} />
                 <meshBasicMaterial transparent opacity={0} color="#e3f0fa" />
               </mesh>
               {/* Projects */}
-              <mesh position={[-1.62, 0.25, 1]} scale={[1, 0.25, 0.2]} onClick={() => setIsProjectsOpen(true)} rotation={[0, 19.3, 0]}>
+              <mesh position={[-1.62, 0.25, 1]} scale={[1, 0.25, 0.2]} onClick={handleProjectsClick} rotation={[0, 19.3, 0]}>
                 <boxGeometry args={[1, 1, 0.5]} />
-                <meshBasicMaterial transparent opacity={0} 
-                color="#1a1a4f" />
+                <meshBasicMaterial transparent opacity={0} color="#1a1a4f" />
               </mesh>
               {/* Contact */}
-              <mesh position={[-1.62, -0.05, 1]} scale={[0.75, 0.2, 0.2]} onClick={() => window.open('mailto:tiyaverma2004@yahoo.in', '_blank')} rotation={[0, 19.67, 0]}>
+              <mesh position={[-1.62, -0.05, 1]} scale={[0.75, 0.2, 0.2]} onClick={handleContactClick} rotation={[0, 19.67, 0]}>
                 <boxGeometry args={[1, 1, 0.5]} />
-                <meshBasicMaterial transparent opacity={0} 
-                color="#1a1a4f" />
+                <meshBasicMaterial transparent opacity={0} color="#1a1a4f" />
               </mesh>
             </group>
           </PresentationControls>

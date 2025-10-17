@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useClickSound from '../hooks/useClickSound';
 
 const PreLoader = ({ onLoadComplete }) => {
     const [progress, setProgress] = useState(0);
@@ -7,6 +8,7 @@ const PreLoader = ({ onLoadComplete }) => {
     const [isCookingVisible, setIsCookingVisible] = useState(true);
     const [showStartButton, setShowStartButton] = useState(false);
     const navigate = useNavigate();
+    const playClickSound = useClickSound();
 
     useEffect(() => {
         // Simulate loading progress in intervals of 10
@@ -34,7 +36,7 @@ const PreLoader = ({ onLoadComplete }) => {
     }, [isReady]);
 
     const handleStart = async () => {
-        // Add your start logic here
+        playClickSound();
         if (onLoadComplete) {
             onLoadComplete();
         }

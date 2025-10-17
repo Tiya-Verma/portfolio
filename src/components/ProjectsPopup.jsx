@@ -1,8 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import useClickSound from '../hooks/useClickSound';
 
 const ProjectsPopup = ({ isOpen, onClose }) => {
+  const playClickSound = useClickSound();
+
   if (!isOpen) return null;
+
+  const handleClose = () => {
+    playClickSound();
+    onClose();
+  };
 
   return (
     <motion.div
@@ -10,7 +18,7 @@ const ProjectsPopup = ({ isOpen, onClose }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
@@ -20,21 +28,18 @@ const ProjectsPopup = ({ isOpen, onClose }) => {
         onClick={e => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 text-white hover:text-gray-300"
         >
           ✕
         </button>
-        <h2 className="text-3xl font-bold text-white mb-4">Projects</h2>
-        <div className="text-gray-300 space-y-4">
+        <h2 className="text-5xl md:text-6xl font-extrabold text-left w-full mb-8" style={{letterSpacing: '-0.03em'}}>
+          <span className="text-blue-400">Projects</span>
+        </h2>
+        <div className="text-white-300 space-y-8">
           <p>
-            Here are some of my featured projects:
+            work in progress...
           </p>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Project 1: Description of project 1.</li>
-            <li>Project 2: Description of project 2.</li>
-            <li>Project 3: Description of project 3.</li>
-          </ul>
         </div>
       </motion.div>
     </motion.div>

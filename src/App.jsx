@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
 import { Hero, Navbar } from './components';
 import { useEffect, useState } from 'react';
 import IceCreamTruckCanvas from './components/canvas/IceCreamTruckCanvas';

@@ -5,11 +5,18 @@ import { navLinks } from '../constants';
 import { menu, close } from '../assets';
 import logo from '../assets/logo.png';
 import SkillsPopup from './SkillsPopup';
+import useClickSound from '../hooks/useClickSound';
 
 const Navbar = () => {
   const [active, setActive] = useState("");
   const [toggle, setToggle] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const playClickSound = useClickSound();
+
+  const handleLogoClick = () => {
+    playClickSound();
+    setIsPopupOpen(true);
+  };
 
   return (
     <nav 
@@ -19,12 +26,15 @@ const Navbar = () => {
         <img src={logo} alt="logo" className="w-12 h-14 mr-2" />
         <p
           className="makeanote-font text-[42px] text-white font-bold cursor-pointer flex transition-colors duration-200 hover:text-blue-400"
-          onClick={() => setIsPopupOpen(true)}
+          onClick={handleLogoClick}
         >
           Tiya Verma
         </p>
       </div>
-      <SkillsPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+      <SkillsPopup isOpen={isPopupOpen} onClose={() => {
+        playClickSound();
+        setIsPopupOpen(false);
+      }} />
     </nav>
   );
 };
