@@ -3,16 +3,16 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, Center, PresentationControls, MeshReflectorMaterial } from '@react-three/drei';
 import { IceCreamTruck } from '../IceCreamTruck';
 import AboutPopup from '../AboutPopup';
-import ProjectsPopup from '../ProjectsPopup';
 import useClickSound from '../../hooks/useClickSound';
 import useWhooshSound from '../../hooks/useWhooshSound';
+import { useNavigate } from 'react-router-dom';
 
 export default function IceCreamTruckCanvas() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const [isProjectsOpen, setIsProjectsOpen] = useState(false);
   const playClickSound = useClickSound();
   const { playWhooshSound, stopWhooshSound } = useWhooshSound();
   const hasMoved = useRef(false);
+  const navigate = useNavigate();
 
   const handleAboutClick = () => {
     playClickSound();
@@ -21,7 +21,7 @@ export default function IceCreamTruckCanvas() {
 
   const handleProjectsClick = () => {
     playClickSound();
-    setIsProjectsOpen(true);
+    navigate('/projects');
   };
 
   const handleResumeClick = () => {
@@ -63,10 +63,6 @@ export default function IceCreamTruckCanvas() {
       <AboutPopup isOpen={isAboutOpen} onClose={() => {
         playClickSound();
         setIsAboutOpen(false);
-      }} />
-      <ProjectsPopup isOpen={isProjectsOpen} onClose={() => {
-        playClickSound();
-        setIsProjectsOpen(false);
       }} />
       <Canvas
         camera={{
