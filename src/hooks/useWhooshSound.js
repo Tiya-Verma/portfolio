@@ -6,7 +6,7 @@ const useWhooshSound = () => {
 
     useEffect(() => {
         // Create and preload the audio
-        audioRef.current = new Audio('/portfolio/sounds/whoosh.mp3');
+        audioRef.current = new Audio('/sounds/whoosh.mp3');
         audioRef.current.load();
         // Set volume lower for whoosh sound
         audioRef.current.volume = 0.5;
@@ -19,7 +19,7 @@ const useWhooshSound = () => {
             if (audioRef.current && !isPlaying.current) {
                 audioRef.current.currentTime = 0;
                 const playPromise = audioRef.current.play();
-                
+
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
                         isPlaying.current = true;

@@ -5,7 +5,7 @@ const useClickSound = () => {
 
     useEffect(() => {
         // Create and preload the audio
-        audioRef.current = new Audio('/portfolio/sounds/click.mp3');
+        audioRef.current = new Audio('/sounds/click.mp3');
         audioRef.current.load();
     }, []);
 
@@ -14,7 +14,7 @@ const useClickSound = () => {
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
                 const playPromise = audioRef.current.play();
-                
+
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
                         console.log('Audio playback failed:', error);
